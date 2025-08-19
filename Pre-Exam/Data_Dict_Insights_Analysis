@@ -1,0 +1,187 @@
+The dataset is structured around a classic vehicle retailer with multiple warehouses. Below are the tables, columns, relationships, and business insights.
+  ==========================================================================================================================================================
+
+🔹 1. warehouses
+
+Purpose: Defines the storage facilities.
+
+Column	Type	Description	Context / Insights
+warehouseCode	CHAR(1) Primary Key	Unique warehouse identifier (A–D).	Key link to products.
+warehouseName	VARCHAR	Human-readable name (North, East, West, South).	Useful in reporting.
+warehousePctCap	INT	Normalized “capacity points” (not physical sqft, but relative storage capacity).	Used to test headroom and feasibility of closure.
+
+👉 Insights: warehousePctCap lets us compute utilization % and check if other warehouses can absorb inventory if one closes.
+
+🔹 2. products
+
+Purpose: Master list of SKUs (vehicles or vehicle-related items).
+
+Column	Type	Description	Context / Insights
+productCode	VARCHAR Primary Key	Unique product identifier.	Primary key for joins.
+productName	VARCHAR	Name of the vehicle/item.	Used in reports.
+productLine	VARCHAR Foreign  Key	Category (e.g., Vintage Cars, Classic Motorcycles).	Groups for ABC analysis.
+productScale	VARCHAR	Scale (model-to-life, e.g., 1:10).	Useful for clustering similar SKUs.
+productVendor	VARCHAR	Supplier/vendor.	Can reveal vendor dependency.
+productDescription	TEXT	Description of vehicle/item.	Metadata.
+quantityInStock	INT	Current on-hand units.	Used in inventory analysis.
+buyPrice	DECIMAL	Purchase cost per unit.	Basis for inventory valuation and COGS proxy.
+MSRP	DECIMAL	Suggested retail price.	Basis for margin analysis.
+warehouseCode	CHAR(1) FK	Which warehouse stores this SKU.	Critical for warehouse-level views.
+
+👉 Insights:
+
+Stock distribution across warehouses.
+
+Profitability proxy = MSRP − buyPrice.
+
+Over/understocking flagged via quantityInStock vs demand.
+
+Dead stock detection = quantityInStock > 0 and no sales in 12 months.
+
+🔹 3. productlines
+
+Purpose: Category hierarchy.
+
+Column	Type	Description
+productLine	VARCHAR PK	Product category name.
+textDescription	TEXT	Category description.
+
+👉 Insights: Useful for ABC classification and segment analysis.
+
+🔹 4. orders
+
+Purpose: Sales order header.
+
+Column	Type	Description
+orderNumber	INT Primary Key	Unique order ID.
+orderDate	DATE	When order was placed.
+requiredDate	DATE	Required delivery date.
+shippedDate	DATE	Actual ship date.
+status	VARCHAR	Status (Shipped, Cancelled, On Hold).
+comments	TEXT	Notes.
+customerNumber	INT Foreign Key	Who ordered.
+
+👉 Insights: Order trends (seasonality), fulfillment lead times (shippedDate − orderDate), cancellation analysis.
+
+🔹 5. orderdetails
+
+Purpose: Sales order line items.
+
+Column	Type	Description	Context / Insights
+orderNumber	INT PK FK	Links to orders.	
+productCode	VARCHAR PK FK	Links to products.	
+quantityOrdered	INT	Units sold in this order.	
+priceEach	DECIMAL	Selling price per unit.	
+orderLineNumber	SMALLINT	Line number within order.	
+
+👉 Insights:
+
+Sales velocity (SUM(quantityOrdered)).
+
+Revenue = quantityOrdered * priceEach.
+
+COGS proxy = quantityOrdered * buyPrice.
+
+Profitability proxy = revenue − COGS.
+
+🔹 6. customers
+
+Purpose: Buyers of Mint Classics products.
+
+Column	Type	Description
+customerNumber	INT PK	Customer ID.
+customerName	VARCHAR	Name.
+contactLastName / contactFirstName	VARCHAR	Primary contact.
+phone	VARCHAR	Contact number.
+addressLine1/2, city, state, postalCode, country	VARCHAR	Location fields.
+salesRepEmployeeNumber	INT FK	Assigned sales rep.
+creditLimit	DECIMAL	Max allowed outstanding balance.
+
+👉 Insights:
+
+Geography-based demand (map customers to warehouses).
+
+Top customers by revenue.
+
+Potential link between creditLimit and order frequency.
+
+🔹 7. employees
+
+Purpose: Sales reps & staff.
+
+Column	Type	Description
+employeeNumber	INT PK	Employee ID.
+lastName, firstName	VARCHAR	Name.
+extension, email, officeCode	VARCHAR	Contact details.
+reportsTo	INT	Manager relationship.
+jobTitle	VARCHAR	Role.
+
+👉 Insights: Sales attribution, employee hierarchy.
+
+🔹 8. offices
+
+Purpose: Company office locations.
+
+Column	Type	Description
+officeCode	VARCHAR Primary Key 	Office ID.
+city, phone, addressLine1/2, state, country, postalCode	VARCHAR	Location info.
+territory	VARCHAR	Region served.
+🔹 9. payments
+
+Purpose: Customer payments.
+
+Column	Type	Description
+customerNumber	INT Foreign Key	Links to customers.
+checkNumber	VARCHAR Primary Key	Unique payment ref.
+paymentDate	DATE	When paid.
+amount	DECIMAL	Amount paid.
+
+👉 Insights: Cash flow, payment reliability, customer risk.
+
+🔗 Relationships (ERD-level)
+
+warehouses (1) ── (∞) products
+
+productlines (1) ── (∞) products
+
+customers (1) ── (∞) orders
+
+orders (1) ── (∞) orderdetails
+
+products (1) ── (∞) orderdetails
+
+employees (1) ── (∞) customers (via salesRepEmployeeNumber)
+
+offices (1) ── (∞) employees
+
+customers (1) ── (∞) payments
+
+💡 Key Analytical Insights Enabled
+
+Warehouse Analysis
+
+Utilization vs capacity (warehouses + products.quantityInStock).
+
+Absorption test for closure feasibility.
+
+Inventory vs Sales
+
+Demand velocity (orderdetails.quantityOrdered vs products.quantityInStock).
+
+Days of Supply, turnover, GMROI proxies.
+
+Dead & Slow Stock
+
+SKUs with quantityInStock > 0 and 0 sales in last 12m → markdown/drop.
+
+Customer & Sales Patterns
+
+Geographic demand vs warehouse coverage.
+
+Top customers & payment behavior (churn/cash flow risk).
+
+Financial Performance
+
+Revenue, COGS proxy, margin.
+
+Impact of SKU rationalization & warehouse closure on P&L.
