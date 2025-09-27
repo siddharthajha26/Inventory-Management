@@ -5,10 +5,10 @@ The dataset is structured around a classic vehicle retailer with multiple wareho
 
 Purpose: Defines the storage facilities.
 
-Column	        Type	                 Description	                                                                       Context / Insights
-warehouseCode	  CHAR(1)            Primary Key	Unique warehouse identifier (A–D).	                                       Key link to products.
-warehouseName	  VARCHAR	          Human-readable name (North, East, West, South).	                                          Useful in reporting.
-warehousePctCap	INT	              Normalized “capacity points” (not physical sqft, but relative storage capacity).	        Used to test headroom and feasibility of closure.
+Column	        Type	                 Description	                                                                       				Context / Insights
+warehouseCode	  CHAR(1)               Primary Key	Unique warehouse identifier (A–D).	                                      		 	Key link to products.
+warehouseName	  VARCHAR	          		Human-readable name (North, East, West, South).	                                          	Useful in reporting.
+warehousePctCap	  INT	              			Normalized “capacity points” (not physical sqft, but relative storage capacity).	        Used to test headroom and feasibility of closure.
 
 👉 Insights: warehousePctCap lets us compute utilization % and check if other warehouses can absorb inventory if one closes.
 
@@ -17,16 +17,16 @@ warehousePctCap	INT	              Normalized “capacity points” (not physical
 Purpose: Master list of SKUs (vehicles or vehicle-related items).
 
 Column	          Type	               Description	                                                                           Context / Insights
-productCode	    VARCHAR             Primary Key	Unique product identifier.	                                                Primary key for joins.
-productName	    VARCHAR	          Name of the vehicle/item.	                                                                  Used in reports.
-productLine	    VARCHAR           Foreign  Key	Category (e.g., Vintage Cars, Classic Motorcycles).	                      Groups for ABC analysis.
-productScale	VARCHAR	            Scale (model-to-life, e.g., 1:10).	                                                Useful for clustering similar SKUs.
-productVendor	  VARCHAR	          Supplier/vendor.	                                                                    Can reveal vendor dependency.
-productDescription	TEXT	        Description of vehicle/item.	                                                                Metadata.
-quantityInStock	INT	                Current on-hand units.	                                                          Used in inventory analysis.
-buyPrice	    DECIMAL	                Purchase cost per unit.	                                                          Basis for inventory valuation and COGS proxy.
-MSRP	        DECIMAL	              Suggested retail price.	                                                          Basis for margin analysis.
-warehouseCode	CHAR(1)             Foreign Key	Which warehouse stores this SKU.	                                  Critical for warehouse-level views.
+productCode	    VARCHAR             Primary Key	Unique product identifier.	                                            Primary key for joins.
+productName	    VARCHAR	        Name of the vehicle/item.	                                                            Used in reports.
+productLine	    VARCHAR             Foreign  Key	Category (e.g., Vintage Cars, Classic Motorcycles).	                    Groups for ABC analysis.
+productScale	    VARCHAR	        Scale (model-to-life, e.g., 1:10).	                                                    Useful for clustering similar SKUs.
+productVendor	    VARCHAR	        Supplier/vendor.	                                                                    Can reveal vendor dependency.
+productDescription  TEXT	        Description of vehicle/item.	                                                            Metadata.
+quantityInStock     INT	                Current on-hand units.	                                                                    Used in inventory analysis.
+buyPrice	    DECIMAL	        Purchase cost per unit.	                                                                    Basis for inventory valuation and COGS proxy.
+MSRP	            DECIMAL	        Suggested retail price.	                                                                    Basis for margin analysis.
+warehouseCode	    CHAR(1)             Foreign Key	Which warehouse stores this SKU.	                                    Critical for warehouse-level views.
 
 👉 Insights:
 
@@ -42,9 +42,9 @@ Dead stock detection = quantityInStock > 0 and no sales in 12 months.
 
 Purpose: Category hierarchy.
 
-Column	        Type	                        Description            Context/Insights
-productLine	  VARCHAR                           Primary Key	                Product category name.
-textDescription	TEXT	                      Category description.
+Column	          Type	                        Description            Context/Insights
+productLine	  VARCHAR                      Primary Key	       Product category name.
+textDescription	  TEXT	                       Category description.
 
 👉 Insights: Useful for ABC classification and segment analysis.
 
@@ -52,14 +52,14 @@ textDescription	TEXT	                      Category description.
 
 Purpose: Sales order header.
 
-Column	            Type	                    Description
-orderNumber	        INT               Primary Key	Unique order ID.
-orderDate	          DATE	            When order was placed.
-requiredDate	      DATE	             Required delivery date.
+Column	                Type	                    Description
+orderNumber	        INT                 Primary Key	Unique order ID.
+orderDate	        DATE	            When order was placed.
+requiredDate	        DATE	            Required delivery date.
 shippedDate	        DATE	            Actual ship date.
-status	            VARCHAR	           Status (Shipped, Cancelled, On Hold).
-comments	          TEXT	              Notes.
-customerNumber	    INT               Foreign Key	Who ordered.
+status	                VARCHAR	            Status (Shipped, Cancelled, On Hold).
+comments	        TEXT	            Notes.
+customerNumber	        INT                 Foreign Key	(Who ordered).
 
 👉 Insights: Order trends (seasonality), fulfillment lead times (shippedDate − orderDate), cancellation analysis.
 
@@ -67,12 +67,12 @@ customerNumber	    INT               Foreign Key	Who ordered.
 
 Purpose: Sales order line items.
 
-Column	              Type	                Description	Context / Insights
-orderNumber	          INT                     PK FK	Links to orders.	
-productCode	        VARCHAR                   PK FK	Links to products.	
-quantityOrdered	      INT	                    Units sold in this order.	
-priceEach	        DECIMAL	                      Selling price per unit.	
-orderLineNumber  	SMALLINT	                  Line number within order.	
+Column	                Type	                Description	     Context / Insights
+orderNumber	        INT                     PK FK	            Links to orders.	
+productCode	        VARCHAR                 PK FK	            Links to products.	
+quantityOrdered	        INT	                Units sold in this order.	
+priceEach	        DECIMAL	                Selling price per unit.	
+orderLineNumber  	SMALLINT	        Line number within order.	
 
 👉 Insights:
 
@@ -90,13 +90,13 @@ Purpose: Buyers of Mint Classics products.
 
 Column	                                  Type	                              Description
 customerNumber	                        INT PK	                              Customer ID.
-customerName	                          VARCHAR	                                Name.
-contactLastName / contactFirstName	    VARCHAR	                          Primary contact.
-phone	                                  VARCHAR	                          Contact number.
-addressLine1/2, city, 	                VARCHAR	                          Location fields.
-state, postalCode, country
-salesRepEmployeeNumber	                  INT                           FK	Assigned sales rep.
-creditLimit	                          DECIMAL	                            Max allowed outstanding balance.
+customerName	                        VARCHAR	                                Name.
+contactLastName / contactFirstName	VARCHAR	                          	Primary contact.
+phone	                                VARCHAR	                          	Contact number.
+addressLine1/2, city, 	                VARCHAR	                          	Location fields.
+state, postalCode, country		TEXT				        Location Details
+salesRepEmployeeNumber	                INT                           FK	Assigned sales rep.
+creditLimit	                        DECIMAL	                                Max allowed outstanding balance.
 
 👉 Insights:
 
@@ -110,13 +110,13 @@ Potential link between creditLimit and order frequency.
 
 Purpose: Sales reps & staff.
 
-Column	                Type	                  Description
+Column	                  Type	                  	Description
 employeeNumber	          INT                 PK	Employee ID.
-lastName, firstName	      VARCHAR	            Name.
-extension, email,      	VARCHAR	          Contact details.
+lastName, firstName	  VARCHAR	           	 Name.
+extension, email,      	  VARCHAR	          	Contact details.
  officeCode
-reportsTo	                 INT	          Manager relationship.
-jobTitle	              VARCHAR	                Role.
+reportsTo	          INT	          	Manager relationship.
+jobTitle	          VARCHAR	                Role.
 
 👉 Insights: Sales attribution, employee hierarchy.
 
@@ -126,19 +126,19 @@ Purpose: Company office locations.
 
 Column	                          Type	                  Description
 officeCode	                    VARCHAR               Primary Key 	Office ID.
-city, phone, addressLine1/2,   	VARCHAR	              Location info.
+city, phone, addressLine1/2,   	    VARCHAR	          Location info.
 state, country, postalCode
-territory	                      VARCHAR	              Region served.
+territory	                    VARCHAR	          Region served.
 
 🔹 9. payments
 
 Purpose: Customer payments.
 
-Column	              Type	                            Description
-customerNumber	    INT                             Foreign Key	Links to customers.
+Column	             	 Type	                            Description
+customerNumber	    	INT                             Foreign Key	Links to customers.
 checkNumber	        VARCHAR                         Primary Key	Unique payment ref.
-paymentDate	          DATE	                          When paid.
-amount	               DECIMAL	                    Amount paid.
+paymentDate	        DATE	                        When paid.
+amount	                DECIMAL	                        Amount paid.
 
 👉 Insights: Cash flow, payment reliability, customer risk.
 
@@ -164,7 +164,7 @@ customers (1) ── (∞) payments
 
 Warehouse Analysis
 
-Utilization vs capacity (warehouses + products.quantityInStock).
+Utilization vs capacity (warehouses vs products.quantityInStock).
 
 Absorption test for closure feasibility.
 
