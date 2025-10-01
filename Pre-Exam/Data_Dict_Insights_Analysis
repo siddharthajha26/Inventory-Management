@@ -32,8 +32,6 @@ warehouseCode	    CHAR(1)             Foreign Key	Which warehouse stores this SK
 
 Stock distribution across warehouses.
 
-Profitability proxy = MSRP − buyPrice.
-
 Over/understocking flagged via quantityInStock vs demand.
 
 Dead stock detection = quantityInStock > 0 and no sales in 12 months.
@@ -183,6 +181,6 @@ customers (1) ── (∞) payments
 
 11-Financial Performance
 
-12-Revenue, COGS proxy, margin.
+12-Revenue, COGS, margin.
 
 13-Impact of SKU rationalization & warehouse closure on P&L.
