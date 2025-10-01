@@ -1,3 +1,7 @@
+-- 1-Warehouse Analysis
+-- 2-Utilization vs capacity (warehouses vs products.quantityInStock).
+-- 3-Absorption test for closure feasibility.
+
 USE mintclassics;
 SHOW TABLES;
 SELECT * FROM customers;
@@ -7,7 +11,7 @@ SELECT * FROM customers WHERE customerName IS NOT NULL;
 SELECT * FROM employees;
 SELECT * FROM offices;
 SELECT * FROM orderdetails;
-SELECT *,(quantityOrdered*priceEach) AS orderValue FROM orderdetails;
+SELECT * FROM orderdetails;
 SELECT * FROM orders;
 SELECT * FROM payments;
 SELECT * FROM productlines;
