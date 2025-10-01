@@ -80,7 +80,7 @@ Sales velocity (SUM(quantityOrdered)).
 
 Revenue = quantityOrdered * priceEach.
 
-COGS proxy = quantityOrdered * buyPrice.
+COGS = quantityOrdered * buyPrice.
 
 Profitability proxy = revenue − COGS.
 
@@ -141,8 +141,7 @@ paymentDate	        DATE	                        When paid.
 amount	                DECIMAL	                        Amount paid.
 
 👉 Insights: Cash flow, payment reliability, customer risk.
-
-🔗 Relationships (ERD-level)
+ Relationships (ERD-level)
 
 warehouses (1) ── (∞) products
 
@@ -162,30 +161,28 @@ customers (1) ── (∞) payments
 
 💡 Key Analytical Insights Enabled
 
-Warehouse Analysis
+1-Warehouse Analysis
 
-Utilization vs capacity (warehouses vs products.quantityInStock).
+2-Utilization vs capacity (warehouses vs products.quantityInStock).
 
-Absorption test for closure feasibility.
+3-Absorption test for closure feasibility.
 
-Inventory vs Sales
+4-Inventory vs Sales
 
-Demand velocity (orderdetails.quantityOrdered vs products.quantityInStock).
+5-Demand velocity (orderdetails.quantityOrdered vs products.quantityInStock).
 
-Days of Supply, turnover, GMROI proxies.
+6-Dead & Slow Stock
 
-Dead & Slow Stock
+7-SKUs with quantityInStock > 0 and 0 sales in last 12m → markdown/drop.
 
-SKUs with quantityInStock > 0 and 0 sales in last 12m → markdown/drop.
+8-Customer & Sales Patterns
 
-Customer & Sales Patterns
+9-Geographic demand vs warehouse coverage.
 
-Geographic demand vs warehouse coverage.
+10-Top customers & payment behavior (churn/cash flow risk).
 
-Top customers & payment behavior (churn/cash flow risk).
+11-Financial Performance
 
-Financial Performance
+12-Revenue, COGS proxy, margin.
 
-Revenue, COGS proxy, margin.
-
-Impact of SKU rationalization & warehouse closure on P&L.
+13-Impact of SKU rationalization & warehouse closure on P&L.

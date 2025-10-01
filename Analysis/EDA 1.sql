@@ -34,8 +34,8 @@ ORDER BY spare_capacity_pct DESC;
 
 -- As is evident from the results of the query the most underutilized warehouse in terms of percentage utilisation is that in the west(warehouse C) with 50% utlization.In that case it may be 
 -- feasable to close the West warehouse only when the total stock at west can be approprately adjusted to the other three warehouses.
--- We need to make an absorption test for the purpose
 
+-- We need to make an absorption test for the purpose as shown below:-
 -- Step 1: Calculate Stock, capacity, and spare capacity in ABSOLUTE units
 WITH warehouse_summary AS (
     SELECT 
