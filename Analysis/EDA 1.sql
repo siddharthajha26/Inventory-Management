@@ -11,7 +11,6 @@ SELECT * FROM customers WHERE customerName IS NOT NULL;
 SELECT * FROM employees;
 SELECT * FROM offices;
 SELECT * FROM orderdetails;
-SELECT * FROM orderdetails;
 SELECT * FROM orders;
 SELECT * FROM payments;
 SELECT * FROM productlines;
